@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 from requests_oauthlib import OAuth1
 import requests,platform,re,os,time
+def utf(s):
+    try: s.encode(encoding='utf-8').decode('ascii')
+    except UnicodeDecodeError: return False
+    else: return True
 ###################################
 # API Functions
 login = lambda u,p: requests.post("https://api.twitter.com/auth/1/xauth_password.json",data={'x_auth_identifier':u,'x_auth_password':p},headers={'Authorization':'Bearer AAAAAAAAAAAAAAAAAAAAAFXzAwAAAAAAMHCxpeSDG1gLNLghVe8d74hl6k4%3DRUMF4xAQLsbeBhTSRrCiQpJtxoGWeyHrDb5te2jpGskWDFW82F','X-Guest-Token':requests.post("https://api.twitter.com/1.1/guest/activate.json",headers={"Authorization":"Bearer AAAAAAAAAAAAAAAAAAAAAFXzAwAAAAAAMHCxpeSDG1gLNLghVe8d74hl6k4%3DRUMF4xAQLsbeBhTSRrCiQpJtxoGWeyHrDb5te2jpGskWDFW82F"}).json()['guest_token']})
@@ -9,8 +13,12 @@ trend = lambda q,c,o1,o2: requests.get('https://api.twitter.com/2/search/adaptiv
 ###################################
 if __name__ == '__main__':
 	sys = platform.system()
-	if 'Linux' in sys: os.system('clear')
-	if 'Windows' in sys: os.system('cls')
+	if 'Linux' in sys:
+		os.system('clear')
+		os.system('export PYTHONIOENCODING=utf-8')
+	if 'Windows' in sys:
+		os.system('cls')
+		os.system('SET PYTHONIOENCODING=utf-8')
 	print('''+----------------------------------------------+
 |       CoDeD By 1337r00t (@0x1337r00t)        |
 |             Blackfox's Group ©               |
@@ -29,6 +37,7 @@ if __name__ == '__main__':
 		print("Logged as "+username)
 		X_Token,X_Secret = attemp.json()['oauth_token'],attemp.json()['oauth_token_secret']
 		hashtag = raw_input('Hashtag [With (#)] => ')
+		hashtag = hashtag if utf(hashtag) else unicode(hashtag, "utf-8")
 	if '3' in v:
 		username = str(input('Your Twitter Username => '))
 		password = str(input('Your Twitter Password => '))
@@ -39,6 +48,7 @@ if __name__ == '__main__':
 		print("Logged as "+username)
 		X_Token,X_Secret = attemp.json()['oauth_token'],attemp.json()['oauth_token_secret']
 		hashtag = str(input('Hashtag [Without (#)] => '))
+		hashtag = hashtag if utf(hashtag) else hashtag.encode('utf-8')
 	search = trend(hashtag,None,X_Token,X_Secret)
 	if '"tweets":{}' in search:
 		print("Hashtag not found")

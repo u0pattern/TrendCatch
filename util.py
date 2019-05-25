@@ -15,16 +15,7 @@ SIGNATURE = '''+----------------------------------------------+
 +----------------------------------------------+
 '''
 
-def utf(s):
-    #TODO: Can't use both ascii and utf-8, is this function checking for ASCII or UTF-8?
-    try:
-        s.encode(encoding='utf-8').decode('ascii')
-        return True
-    except UnicodeDecodeError:
-        return False
-
 def init():
-    sys = platform.system()
     os.system('cls||clear')
     os.system('export PYTHONIOENCODING=utf-8')
     print(SIGNATURE)

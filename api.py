@@ -41,13 +41,19 @@ def get_guest_token():
 
 
 def login(u, p):
-    return requests.post(LOGIN_URI, data={'x_auth_identifier': u, 'x_auth_password': p}, headers={'Authorization': AUTH_TOKEN, 'X-Guest-Token': get_guest_token()})
+    resp = requests.post(LOGIN_URI, data={'x_auth_identifier': u, 'x_auth_password': p}, headers={'Authorization': AUTH_TOKEN, 'X-Guest-Token': get_guest_token()})
+    
+    if (resp.status_code == 200):
+        resp = resp.json()
+        return 0, resp['oauth_token'], resp['oauth_token_secret'] 
+    
+    return -1, None, None
 
 
 def trend(q, c, o1, o2):
     query_string = 'q=%23{}&{}'.format(
         q.replace('#', '%23').replace('%23', ''),
-        u'&'.join(str(tag) for tag in SEARCH_TAGS)
+        '&'.join((tag) for tag in SEARCH_TAGS)
     )
 
     if c:
@@ -55,5 +61,6 @@ def trend(q, c, o1, o2):
             c.replace('=', '%3D'), query_string)
 
     return requests.get('{}?{}'.format(ADAP_URI, query_string),
-                        auth=OAuth1(OAUTH_C_KEY, OAUTH_C_SECRET, o1, o2, decoding=None)).text
+                        auth=OAuth1(OAUTH_C_KEY, OAUTH_C_SECRET, o1, o2, decoding=None)
+                        ).text
                         

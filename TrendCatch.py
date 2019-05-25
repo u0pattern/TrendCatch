@@ -5,33 +5,32 @@ import re
 from getpass import getpass
 
 from api import login, trend
-from util import utf, init, uinput, py_version
+from util import init, uinput, py_version
 
 def main():
     username = uinput('Your Twitter Username => ')
     password = getpass('Your Twitter Password => ')
 
-    attempt = login(username, password)
+    err, X_Token, X_Secret = login(username, password)
     
-    if attempt.status_code != 200:
+    if err != 0:
         print("Username/Password Is incorrect")
         return
     
     print("Logged as {}".format(username))
-
-    attempt = attempt.json()
-    X_Token, X_Secret = attempt['oauth_token'], attempt['oauth_token_secret']
     
-    while True:
+    while True: # Main loop
         hashtag = uinput("Hashtag ('q' to quit) => ").strip()
         
         if hashtag == 'q':
             print('Exiting...')
             return
         
-        if not utf(hashtag):
-            hashtag = (unicode(hashtag, 'utf-8') if py_version==2 else hashtag.encode('utf-8'))  
+        if hashtag == '':
+            print('Invalid input')
+            continue
         
+        hashtag = unicode(hashtag, 'utf-8') if py_version==2 else hashtag
         search = trend(hashtag, None, X_Token, X_Secret)
         
         if '"tweets":{}' in search:

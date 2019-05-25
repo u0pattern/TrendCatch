@@ -16,8 +16,7 @@ SIGNATURE = '''+----------------------------------------------+
 '''
 
 def utf(s):
-    #TODO: Can't use both ascii and utf-8, is this function checking for ASCII
-    #or utf-8?
+    #TODO: Can't use both ascii and utf-8, is this function checking for ASCII or UTF-8?
     try:
         s.encode(encoding='utf-8').decode('ascii')
         return True

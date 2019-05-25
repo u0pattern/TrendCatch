@@ -47,12 +47,13 @@ def login(u, p):
 def trend(q, c, o1, o2):
     query_string = 'q=%23{}&{}'.format(
         q.replace('#', '%23').replace('%23', ''),
-        '&'.join(SEARCH_TAGS)
+        u'&'.join(str(tag) for tag in SEARCH_TAGS)
     )
 
     if c:
         query_string = 'cursor=scroll%3A{}&{}'.format(
             c.replace('=', '%3D'), query_string)
 
-    return requests.get('{}?'.format(ADAP_URI, query_string),
+    return requests.get('{}?{}'.format(ADAP_URI, query_string),
                         auth=OAuth1(OAUTH_C_KEY, OAUTH_C_SECRET, o1, o2, decoding=None)).text
+                        

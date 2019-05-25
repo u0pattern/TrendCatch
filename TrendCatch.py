@@ -22,30 +22,35 @@ def main():
     attempt = attempt.json()
     X_Token, X_Secret = attempt['oauth_token'], attempt['oauth_token_secret']
     
-    hashtag = uinput('Hashtag [Without (# or %23)] => ')
-	
-    if not utf(hashtag):
-		hashtag = (unicode(hashtag, 'utf-8') if py_version==2 else hashtag.encode('utf-8'))  
-    
-    search = trend(hashtag, None, X_Token, X_Secret)
-    
-    if '"tweets":{}' in search:
-        print("Hashtag not found")
-        return
-    
-    cursor = re.search(
-        '"value":"scroll:(.+?)","cursorType":"Bottom"', search).group(1)
-    
     while True:
-        print("Cursor -> "+cursor)
-        last_tweet = re.search('tweets":{"(.+?)":{', search).group(1)
-        search = trend(hashtag, cursor, X_Token, X_Secret)
+        hashtag = uinput("Hashtag ('q' to quit) => ").strip()
+        
+        if hashtag == 'q':
+            print('Exiting...')
+            return
+        
+        if not utf(hashtag):
+            hashtag = (unicode(hashtag, 'utf-8') if py_version==2 else hashtag.encode('utf-8'))  
+        
+        search = trend(hashtag, None, X_Token, X_Secret)
+        
         if '"tweets":{}' in search:
-            print("First Tweet -> https://twitter.com/i/status/{}".format(last_tweet))
-            break
-        else:
-            cursor = re.search(
-                '"value":"scroll:(.+?)","cursorType":"Bottom"', search).group(1)
+            print("Hashtag not found")
+            continue
+        
+        cursor = re.search(
+            '"value":"scroll:(.+?)","cursorType":"Bottom"', search).group(1)
+        
+        while True:
+            print("Cursor -> "+cursor)
+            last_tweet = re.search('tweets":{"(.+?)":{', search).group(1)
+            search = trend(hashtag, cursor, X_Token, X_Secret)
+            if '"tweets":{}' in search:
+                print("First Tweet -> https://twitter.com/i/status/{}".format(last_tweet))
+                break
+            else:
+                cursor = re.search(
+                    '"value":"scroll:(.+?)","cursorType":"Bottom"', search).group(1)
 
 if __name__ == '__main__':
     init()

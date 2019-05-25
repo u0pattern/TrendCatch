@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from requests_oauthlib import OAuth1
-import requests,platform,os,time
+import requests,platform,os,re,time
 def utf(s):
     try: s.encode(encoding='utf-8').decode('ascii')
     except UnicodeDecodeError: return False

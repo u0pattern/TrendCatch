@@ -24,14 +24,18 @@ if __name__ == '__main__':
 	username = uinput('Your Twitter Username => ')
 	password = uinput('Your Twitter Password => ')
 	attemp = login(username,password)
-	if attemp.status_code != 200: exit(print("Username/Password Is incorrect"))
+	if attemp.status_code != 200:
+		print("Username/Password Is incorrect")
+		exit()
 	print("Logged as "+username)
 	X_Token,X_Secret = attemp.json()['oauth_token'],attemp.json()['oauth_token_secret']
 	hashtag = uinput('Hashtag [Without (# and %23)] => ')
 	if not utf(hashtag):
 		hashtag = unicode(hashtag, 'utf-8') if platform.python_version().split(".")[0]=="2" else hashtag.encode('utf-8')
 	search = trend(hashtag,None,X_Token,X_Secret)
-	if '"tweets":{}' in search: exit(print("Hashtag not found"))
+	if '"tweets":{}' in search:
+		print("Hashtag not found")
+		exit()
 	cursor = re.search('"value":"scroll:(.+?)","cursorType":"Bottom"', search).group(1)
 	while True:
 		print("Cursor -> "+cursor)

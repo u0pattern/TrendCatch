@@ -29,15 +29,15 @@ if __name__ == '__main__':
 	X_Token,X_Secret = attemp.json()['oauth_token'],attemp.json()['oauth_token_secret']
 	hashtag = uinput('Hashtag [Without (# and %23)] => ')
 	if not utf(hashtag):
-		unicode(hashtag, 'utf-8') if platform.python_version().split(".")[0]=="2" else hashtag.encode('utf-8')
+		hashtag = unicode(hashtag, 'utf-8') if platform.python_version().split(".")[0]=="2" else hashtag.encode('utf-8')
 	search = trend(hashtag,None,X_Token,X_Secret)
 	if '"tweets":{}' in search: exit(print("Hashtag not found"))
 	cursor = re.search('"value":"scroll:(.+?)","cursorType":"Bottom"', search).group(1)
 	while True:
 		print("Cursor -> "+cursor)
-		os.environ['LAST_TWEET'] = re.search('tweets":{"(.+?)":{', search).group(1)
+		last_tweet = re.search('tweets":{"(.+?)":{', search).group(1)
 		search = trend(hashtag,cursor,X_Token,X_Secret)
 		if '"tweets":{}' in search:
-			print("First Tweet -> https://twitter.com/i/status/"+os.environ['LAST_TWEET'])
+			print("First Tweet -> https://twitter.com/i/status/"+last_tweet)
 			break
 		else: cursor = re.search('"value":"scroll:(.+?)","cursorType":"Bottom"', search).group(1)
